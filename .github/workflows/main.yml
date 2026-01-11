@@ -1,38 +1,35 @@
-            - nombre: Qodana Scan
-  # Puedes anclar al commit exacto o a la versión.
-  # usos: JetBrains/qodana-action@27de2a744479d1d731934eeaf79287575ebc5dd3
-  usos: JetBrains/qodana-action@v2025.2.1
-  con:
-    Argumentos adicionales de la CLI de Qodana. Separe los argumentos con comas (`,`).
-    args: # opcional, el valor predeterminado es
-    # Directorio para almacenar los resultados del análisis
-    results-dir: # opcional, el valor predeterminado es ${{ runner.temp }}/qodana/results
-    # Directorio para almacenar cachés de Qodana
-    cache-dir: # opcional, el valor predeterminado es ${{ runner.temp }}/qodana/caches
-    # Restaurar y guardar automáticamente los cachés de Qodana usando los cachés de GitHub
-    use-caches: # opcional, el valor predeterminado es verdadero
-    # Establecer la clave de caché principal
-    primary-cache-key: # opcional, el valor predeterminado es qodana-2025.2-${{ github.ref }}-${{ github.sha }}
-    # Establecer la clave de caché adicional
-    clave de caché adicional: # opcional, el valor predeterminado es qodana-2025.2-${{ github.ref }}
-    # Cargar caché solo para la rama predeterminada
-    cache-default-branch-only: # opcional, el valor predeterminado es falso
-    # Cargar resultados de Qodana (SARIF, otros artefactos, registros) como un artefacto en el trabajo
-    upload-result: # opcional, el valor predeterminado es falso
-    # Especifique el nombre del artefacto de resultados de Qodana, utilizado para cargar los resultados
-    nombre-del-artefacto: # opcional, el valor predeterminado es qodana-report
-    # Use anotaciones para marcar los resultados en la interfaz de usuario de GitHub
-    use-annotations: # opcional, el valor predeterminado es verdadero
-    # Analizar SÓLO los archivos modificados en una solicitud de extracción
-    pr-mode: # opcional, el valor predeterminado es verdadero
-    # Publicar un comentario con el resumen de los resultados de Qodana en la solicitud de extracción
-    post-pr-comment: # opcional, el valor predeterminado es verdadero
-    # Token de GitHub para acceder al repositorio: anotaciones de publicaciones, comentarios
-    github-token: # opcional, el valor predeterminado es ${{ github.token }}
-    # Envía correcciones de Qodana al repositorio, puede ser ninguna, una rama a la rama actual o una solicitud de extracción
-    push-fixes: # opcional, el valor predeterminado es ninguno
-    # Mensaje de confirmación para la confirmación con correcciones rápidas. No se usa si `push-fixes` está configurado como `none`.
-    commit-message: # opcional, el valor predeterminado es 🤖 Aplicar soluciones rápidas de Qodana
-    # Utilice la CLI inestable de Qodana todas las noches
-    use-nightly: # opcional, el valor predeterminado es falso
+         name: Qodana
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  qodana:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Qodana Scan
+        uses: JetBrains/qodana-action@v2025.2.1
+        with:
+          args: ""
+          results-dir: ${{ runner.temp }}/qodana/results
+          cache-dir: ${{ runner.temp }}/qodana/caches
+          use-caches: true
+          primary-cache-key: qodana-2025.2-${{ github.ref }}-${{ github.sha }}
+          additional-cache-key: qodana-2025.2-${{ github.ref }}
+          cache-default-branch-only: false
+          upload-result: false
+          artifact-name: qodana-report
+          use-annotations: true
+          pr-mode: true
+          post-pr-comment: true
+          github-token: ${{ github.token }}
+          push-fixes: none
+          commit-message: "🤖 Apply Qodana quick-fixes"
+          use-nightly: false
+
           
